@@ -6,7 +6,7 @@ contract Voting {
     event NewProposal(string name, address user);
     
     mapping (uint => Proposal) proposalObj;
-    uint proposalId = 0;
+    uint public proposalId = 0;
     uint[] proposals;
     
     struct Proposal {
@@ -31,6 +31,7 @@ contract Voting {
         prop.proposer = msg.sender;
         proposals.push(proposalId);
         proposalId++;
+        emit NewProposal(_name, msg.sender);
     }
     
     function getProposal(uint _proposalId) public view
