@@ -1,28 +1,32 @@
 const assert = require("assert");
-const ganache = require("ganache-cli");
-const Web3 = require("web3");
-const web3 = new Web3(ganache.provider());
-const json = require("../client/src/contracts/Voting.json");
-const interface = json['abi'];
-const bytecode = json['bytecode'];
+const Voting = artifacts.require('./Voting.sol');
 
-let accounts;
-let manager;
-let voting;
+contract('Voting', accounts => {
+  let voting;
+  let owner = accounts[0];
 
-beforeEach(async () => {
-  accounts = await web3.eth.getAccounts();
-  manager = accounts[0];
-
-  voting = await new web3.eth.Contract(interface)
-    .deploy({ data: bytecode})
-    .send({ from: manager, gas: '1000000'});
-});
-
-describe('Voting', () => {
-  
-  it('deploys a contract', async() => {
-    const proposalId = await voting.proposalId;
-    assert.equal(proposalId, 0, "The proposalId should start at 0.");
+  beforeEach('setup contract for each test', async () => {
+    voting = await Voting.new(owner);
   });
+
+  it('Starts with the correct value', async() => {
+    let proposalId = await voting.proposalId();
+    assert.equal(proposalId, 0, "proposalId should start at 0");
+  });
+
+  it('Starts with zero proposals', async() => {
+    let proposals = await voting.getAllProposals();
+		assert(proposals, [], "shoul be an empty array");
+  });
+
+  it('Creates a new proposal', async() => {
+    let proposer;
+    let proposalName = "arrays should start at 0?";
+    let proposalDesc = "Some people think they should start at 1"
+    await voting.newProposal(proposalName, proposalName, { from: proposer})
+      .then()  
+      ;
+    
+  })
+
 });
