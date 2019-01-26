@@ -2,8 +2,8 @@ pragma solidity ^0.5.0;
 
 contract Voting {
     
-    event Voted(string proposalName, address user, uint positiveVotes, uint negativeVotes);
-    event NewProposal(string name, address user);
+    event Voted(string proposalName, address voter, uint positiveVotes, uint negativeVotes);
+    event NewProposal(string name, address proposer);
     
     mapping (uint => Proposal) proposalObj;
     uint public proposalId = 0;
