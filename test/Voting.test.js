@@ -57,7 +57,7 @@ contract('Voting', accounts => {
         assert.equal(receipt.logs[0].args.voter, voter1, 'should return the voter address');
         assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have 1 positive vote');
         assert.equal(receipt.logs[0].args.negativeVotes, 0, 'should have 0 negative votes');
-      })
+      });
   });
 
   it('votes negative for a proposal', async() => {
@@ -69,15 +69,47 @@ contract('Voting', accounts => {
         assert.equal(receipt.logs[0].args.voter, voter2, 'should return the voter address');
         assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have 1 positive vote');
         assert.equal(receipt.logs[0].args.negativeVotes, 1, 'should have 1 negative votes');
-      })
+      });
   });
 
-  it('Check already voted', async() => {
+  it('gets a proposal voters', async() => {
+    let proposal = await voting.getProposal(proposalId);
+    let v1 = proposal[4][0];
+    let v2 = proposal[4][1];
+    assert.equal(voter1, v1, "should have the same address");
+    assert.equal(voter2, v2, "should have the same address");
+  })
+
+  it('Checks already voted for votePositive', async() => {
     await voting.votePositive(proposalId, {from: voter1})
       .then(assert.fail)
       .catch(error =>
         assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
       );
+  });
+
+  it('Checks alreaedy voted for voteNegative', async() => {
+    await voting.voteNegative(proposalId, {from: voter1})
+      .then(assert.fail)
+      .catch(error => 
+        assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
+      );
+  });
+
+  it('checks proposal name validation', async() => {
+    await voting.newProposal("", "description", {from: proposer})
+      .then(assert.fail)
+      .catch(error =>
+        assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
+      );
+  });
+
+  it('check proposal description validation', async() => {
+    await voting.newProposal("name", "", {from: proposer})
+      .then(assert.fail)
+      .catch(error => {
+        assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
+      });
   });
 
 });
