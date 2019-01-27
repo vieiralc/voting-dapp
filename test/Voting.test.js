@@ -6,7 +6,6 @@ contract('Voting', accounts => {
   let owner = accounts[0];
   let voter1 = accounts[1];
   let voter2 = accounts[2];
-  let voter3 = accounts[3];
 
   // will be used to create and get a proposal
   let proposer = accounts[1];
