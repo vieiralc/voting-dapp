@@ -44,14 +44,14 @@ contract Voting {
             address
         ) {
  
-            return (
-                proposalObj[_proposalId].name,
-                proposalObj[_proposalId].desc,
-                proposalObj[_proposalId].positiveVotes,
-                proposalObj[_proposalId].negativeVotes,
-                proposalObj[_proposalId].voters,
-                proposalObj[_proposalId].proposer
-            );
+        return (
+            proposalObj[_proposalId].name,
+            proposalObj[_proposalId].desc,
+            proposalObj[_proposalId].positiveVotes,
+            proposalObj[_proposalId].negativeVotes,
+            proposalObj[_proposalId].voters,
+            proposalObj[_proposalId].proposer
+        );
     }
     
     function getAllProposals() public view returns(uint[] memory) {
