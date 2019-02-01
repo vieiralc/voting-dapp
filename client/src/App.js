@@ -3,7 +3,6 @@ import VotingContract from "./contracts/Voting.json";
 import getWeb3 from "./utils/getWeb3";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import "./App.css";
 import WrongNetwork from "./not-found/WrongNetwork";
 import Navbar from "./layout/Navbar";
 import Landing from "./layout/Landing";
