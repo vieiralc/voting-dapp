@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "description": "Voting Ethereum Dapp",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lucas Vieira",
   "license": "MIT",
   "dependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "truffle": "^5.0.3"
   }
 }
