@@ -3,6 +3,7 @@ import VotingContract from "./contracts/Voting.json";
 import getWeb3 from "./utils/getWeb3";
 
 import "./App.css";
+import WrongNetwork from "./error/WrongNetwork";
 
 class App extends Component {
   state = { proposals: [], web3: null, accounts: null, contract: null, correctNetwork: true };
@@ -55,7 +56,7 @@ class App extends Component {
 
   render() {
     if (!this.state.correctNetwork) {
-      return <div> Please connect to Ropsten Network </div>
+      return <WrongNetwork/>;
     }
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
