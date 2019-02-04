@@ -1,0 +1,10 @@
+body {
+    background-color: #957bbe;
+}
+.message {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 72px;
+    color: whitesmoke;
+    text-align: center;
+    margin-top: 15%;
+}
