@@ -41,7 +41,7 @@ class App extends Component {
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
+        `Please, install metamask in order to use this dapp.`,
       );
       console.error(error);
     }
@@ -66,7 +66,7 @@ class App extends Component {
     }
     return (
       <Router>
-        <div className='container-fluid'>
+        <div>
           <Navbar/>
           <Route exact path="/" component={Landing}/>
             <div>The stored value is: {this.state.storageValue}</div>
