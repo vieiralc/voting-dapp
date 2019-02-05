@@ -1,0 +1,10 @@
+
+.title {
+    font-size: 1.3em;
+    color: whitesmoke;
+}
+
+.title:hover {
+    text-decoration: none;
+    color: #957bbe;
+}
