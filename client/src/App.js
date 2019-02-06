@@ -7,6 +7,7 @@ import WrongNetwork from "./not-found/WrongNetwork";
 import Navbar from "./layout/Navbar";
 import Landing from "./layout/Landing";
 import Footer from "./layout/Footer";
+import Spinner from "./common/Spinner";
 
 class App extends Component {
   state = { proposals: [], web3: null, accounts: null, contract: null, correctNetwork: true };
@@ -62,7 +63,7 @@ class App extends Component {
       return <WrongNetwork/>;
     }
     if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+      return <Spinner/>;
     }
     return (
       <Router>
