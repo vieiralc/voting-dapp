@@ -1,0 +1,20 @@
+body {
+    font-size: 1em;
+}
+
+h5 {
+    font-size: 1em;
+}
+
+p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+}
+
+.bookmarked {
+    color: tomato;
+}
+
+.unmarked {
+    color: white;
+}
