@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 contract Voting {
     
-    event Voted(string proposalName, address voter, uint positiveVotes, uint negativeVotes);
+    event Voted(uint proposalId, address voter, uint positiveVotes, uint negativeVotes);
     event NewProposal(string name, address proposer);
     
     mapping (uint => Proposal) proposalObj;
@@ -65,7 +65,7 @@ contract Voting {
         proposalObj[_proposalId].positiveVotes++;
         proposalObj[_proposalId].voters.push(msg.sender);
         emit Voted(
-            proposalObj[_proposalId].name, 
+            _proposalId, 
             msg.sender,
             proposalObj[_proposalId].positiveVotes,
             proposalObj[_proposalId].negativeVotes
@@ -79,7 +79,7 @@ contract Voting {
         proposalObj[_proposalId].negativeVotes++;
         proposalObj[_proposalId].voters.push(msg.sender);
         emit Voted(
-            proposalObj[_proposalId].name, 
+            _proposalId, 
             msg.sender,
             proposalObj[_proposalId].positiveVotes,
             proposalObj[_proposalId].negativeVotes
