@@ -1,44 +1,82 @@
-import React from 'react'
+import React, { Component } from 'react';
+import $ from 'jquery';
+import '../css/card.css';
 
-export default () => {
+class Card extends Component {
   
-    return (
-      
-        <div className="card text-white bg-dark mb-3">
-        
-            <div className="card-header">
-                <div className="row">
-                    <div className="col-md-6">
-                        Proposed by: <span className="text-uppercase"> 
-                        <a href="https://ropsten.etherscan.io/address/0x9c7235749bed9a272133b4ba660bd29a09d63506"> 
-                            0x6273 
-                        </a> </span>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="text-right">
-                            Save
+    constructor() {
+        super();
+
+        this.state = {
+            bookmark: false
+        };
+    };
+
+    componentDidMount() {
+        this.props.contract.events.Voted({fromBlock: 'latest'})
+            .on('data', event => {
+                console.log(event.returnValues[2]);
+				$(`#positive0`).html(event.returnValues[2]);
+                $(`#negative0`).html(event.returnValues[3]);
+            });
+    }
+
+    bookmarkProposal() {
+      this.setState({bookmark: !this.state.bookmark})  
+    };
+
+    render() {
+
+        const { proposal } = this.props;
+        let bookmarkclass = this.state.bookmark ? 'bookmarked' : 'unmarked';
+
+        return (
+            <div className="card text-white bg-dark mb-3">
+                <div className="card-header">
+                    <div className="row">
+                        <div className="col-md-9 col-sm-9 col-9">
+                            Proposed by: <span className="text-uppercase"> 
+                            <a href={`https://ropsten.etherscan.io/address/${proposal.owner}`} target="_blank" rel="noopener noreferrer"> 
+                                {proposal.owner.substring(0,8)} 
+                            </a> </span>
+                        </div>
+                        <div className="col-md-3 col-sm-3 col-3">
+                            <div className="text-right">
+                                <i className={`fas fa-bookmark ${bookmarkclass}`} onClick={this.bookmarkProposal.bind(this)}></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="card-body">
-                <h5 className="card-title"> Proposal Title</h5>
-                <p className="card-text">
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.
-                </p><br/>
-                <button type="button" className="btn btn-light">
-                    Like <span className="badge badge-success">4</span>
-                </button> &nbsp;
-                <button type="button" className="btn btn-light">
-                    Dislike <span className="badge badge-danger">1</span>
-                </button>
-            </div>
+                <div className="card-body">
+                    <h5 className="card-title"> {proposal.name.toUpperCase()} </h5>
+                    <p className="card-text">
+                        {proposal.description}
+                    </p>
+                </div>
 
-            <div className="card-footer text-muted text-center">
-                2 days ago
+                <div className="card-footer">
+                    <div className="row">
+                        <div className="col-md-4 col-sm-4 col-4 text-left">
+                            <span id={`positive${proposal.id}`} className="badge badge-success"> {proposal.positiveVotes} </span> &nbsp;
+                            <i className="fas fa-thumbs-up"> </i>
+                        </div>  
+
+                        <div className="col-md-4 col-sm-4 col-4 text-center">
+                            2 days ago
+                        </div>
+
+                        <div className="col-md-4 col-sm-4 col-4 text-right">
+                            <span id={`negative${proposal.id}`} className="badge badge-danger"> {proposal.negativeVotes} </span> &nbsp;
+                            <i className="fas fa-thumbs-down"> </i>
+                        </div>
+                    </div>
+                    
+                </div>
+
             </div>
-        </div>
-      
-    );
-}
+        );
+    };
+};
+
+export default Card;
