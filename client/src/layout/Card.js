@@ -9,9 +9,14 @@ class Card extends Component {
 
         this.state = {
             bookmark: false,
+            bookmarks: [],
             votepositive: false,
             votenagative: false
         };
+
+        this.bookmarkProposal = this.bookmarkProposal.bind(this);
+        this.votePositive = this.votePositive.bind(this);
+        this.voteNegative = this.voteNegative.bind(this);
     };
 
     componentDidMount() {
@@ -22,8 +27,15 @@ class Card extends Component {
             });
     }
 
-    bookmarkProposal() {
-      this.setState({bookmark: !this.state.bookmark});
+    bookmarkProposal(id) {
+
+        this.setState({
+            bookmark: !this.state.bookmark, 
+            bookmarks: [...this.state.bookmarks, id]
+        });
+
+        console.log(this.state.bookmarks);
+        localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
     };
 
     votePositive() {
@@ -57,7 +69,7 @@ class Card extends Component {
                         </div>
                         <div className="col-md-3 col-sm-3 col-3">
                             <div className="text-right">
-                                <i className={`fas fa-bookmark ${bookmarkclass}`} onClick={this.bookmarkProposal.bind(this)}></i>
+                                <i className={`fas fa-bookmark ${bookmarkclass}`} onClick={() => this.bookmarkProposal(proposal.id)}></i>
                             </div>
                         </div>
                     </div>
@@ -74,7 +86,7 @@ class Card extends Component {
                     <div className="row">
                         <div className="col-md-4 col-sm-4 col-4 text-left">
                             <span id={`positive${proposal.id}`} className="badge badge-success"> {proposal.positiveVotes} </span> &nbsp;
-                            <i className={`fas fa-thumbs-up ${votepositiveclass}`} onClick={this.votePositive.bind(this)}> </i>
+                            <i className={`fas fa-thumbs-up ${votepositiveclass}`} onClick={this.votePositive}> </i>
                         </div>  
 
                         <div className="col-md-4 col-sm-4 col-4 text-center">
@@ -83,7 +95,7 @@ class Card extends Component {
 
                         <div className="col-md-4 col-sm-4 col-4 text-right">
                             <span id={`negative${proposal.id}`} className="badge badge-danger"> {proposal.negativeVotes} </span> &nbsp;
-                            <i className={`fas fa-thumbs-down ${votenegativeclass}`} onClick={this.voteNegative.bind(this)}> </i>
+                            <i className={`fas fa-thumbs-down ${votenegativeclass}`} onClick={this.voteNegative}> </i>
                         </div>
                     </div>
                     
