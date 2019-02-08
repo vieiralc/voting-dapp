@@ -18,3 +18,15 @@ p {
 .unmarked {
     color: white;
 }
+
+.positiveVotes {
+    color: green;
+}
+
+.negativeVotes {
+    color: red;
+}
+
+.not-voted {
+    color: white;
+}
