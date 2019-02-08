@@ -1,3 +1,37 @@
+*{
+    padding: 0; margin: 0;
+}
+
 .land-container {
     margin-top: 3%;
+}
+
+.newProposal {
+    position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#212529;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
+@media screen and (max-width: 600px) {
+    
+    .newProposal {
+        width:40px;
+        height:40px;
+        bottom:20px;
+        right:20px;
+    }
+
+    .my-float{
+        margin-top: 12px;
+    }
 }
