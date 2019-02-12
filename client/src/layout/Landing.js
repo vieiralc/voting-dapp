@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Card from './Card';
-import Spinner from '../common/Spinner';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 import "../css/landing.css";
 
@@ -10,8 +11,16 @@ class Landing extends Component {
 
     super();
     this.state = {
-      proposals: []
-    }
+      proposals: [],
+      show: false,
+      proposalTitle: '',
+      proposalDesc: ''
+    };
+
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   };
 
   componentDidMount() {
@@ -44,15 +53,36 @@ class Landing extends Component {
         this.setState({ proposals: [proposalObj, ...this.state.proposals] });      
       })
     } catch(err) {
-			console.log('Landing -> catch -> err', err)
+			console.log('Landing -> LoadProposals -> catch -> err', err)
     }
   }
 
-  render() {
+  handleClose() {
+    this.setState({ show: false });
+  }
 
-    if (this.state.proposals.length === 0) {
-      return <Spinner/>
-    }
+  handleShow() {
+    this.setState({ show: true });
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    
+    const { contract, accounts } = this.props;
+
+    contract.methods.newProposal(this.state.proposalTitle, this.state.proposalDesc)
+      .send({ from: accounts[0] })
+      .then(receipt => {
+        console.log('your proposal has been sent to the network');
+        this.handleClose();
+      })
+  }
+
+  render() {
 
     return (
       <div className="container-fluid land-container">
@@ -60,16 +90,63 @@ class Landing extends Component {
         <div className="row justify-content-center">
           <div className="col-md-5">
             {
-              this.state.proposals.map((proposal, index) => 
-                <Card key={index} proposal={proposal} contract={this.props.contract}/>
-              )
+              this.state.proposals.length > 0 ?
+                this.state.proposals.map((proposal, index) => 
+                  <Card key={index} proposal={proposal} contract={this.props.contract}/>
+                ) : <p className="text-center"> No proposals yet </p>
             }
           </div>
         </div>
 
-        <div className="newProposal">
+        <div className="newProposal" onClick={this.handleShow}>
           <i className="fas fa-plus my-float"></i>
         </div>
+
+        {
+          // Modal for adding new proposal
+        }
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title> Make your proposal </Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <form>
+              <div className="form-group">
+                <label htmlFor="title">Proposal Title: </label>
+                <input 
+                  name="proposalTitle"
+                  value={this.state.proposalTitle}
+                  onChange={this.onChange}
+                  type="text" 
+                  className="form-control" 
+                  id="title" 
+                  aria-describedby="proposalTitle" 
+                  placeholder="Name your proposal"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Description: </label>
+                <textarea 
+                  name="proposalDesc"
+                  value={this.state.proposalDesc}
+                  onChange={this.onChange}
+                  placeholder="Describe whats on your mind" 
+                  className="form-control" 
+                  id="description" 
+                  rows="3">
+                </textarea>
+              </div>
+            </form>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>Close</Button>
+            <Button variant="primary" onClick={this.onSubmit}>
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );    
   };
