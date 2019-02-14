@@ -6,8 +6,14 @@ contract Voting {
     event NewProposal(uint, string, string, uint, uint, address[], address);
     
     mapping (uint => Proposal) proposalObj;
+    mapping (address => User) userObj;
     uint public proposalId = 0;
     uint[] proposals;
+
+    struct User {
+        uint[] saved;
+        uint[] myProposals;
+    }
     
     struct Proposal {
         string name;
@@ -30,6 +36,7 @@ contract Voting {
         prop.negativeVotes = 0;
         prop.proposer = msg.sender;
         proposals.push(proposalId);
+        userObj[msg.sender].myProposals.push(proposalId);
         proposalId++;
         emit NewProposal(
             proposalId-1,
@@ -104,5 +111,17 @@ contract Voting {
         }
  
         return false;
+    }
+
+    function saveProposal(uint _proposalId) public {
+        userObj[msg.sender].saved.push(_proposalId);
+    }
+
+    function getSaved() public view returns (uint[] memory) {
+        return userObj[msg.sender].saved;
+    }
+
+    function getMyProposals() public view returns (uint[] memory) {
+        return userObj[msg.sender].myProposals;
     }
 }
