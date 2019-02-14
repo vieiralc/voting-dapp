@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 contract Voting {
     
     event Voted(uint proposalId, address voter, uint positiveVotes, uint negativeVotes);
-    event NewProposal(string name, address proposer);
+    event NewProposal(uint, string, string, uint, uint, address[], address);
     
     mapping (uint => Proposal) proposalObj;
     uint public proposalId = 0;
@@ -31,7 +31,15 @@ contract Voting {
         prop.proposer = msg.sender;
         proposals.push(proposalId);
         proposalId++;
-        emit NewProposal(_name, msg.sender);
+        emit NewProposal(
+            proposalId-1,
+            _name,
+            _desc,
+            0,
+            0,
+            prop.voters,
+            prop.proposer
+        );
     }
     
     function getProposal(uint _proposalId) public view
