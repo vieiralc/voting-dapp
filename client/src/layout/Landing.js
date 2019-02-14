@@ -26,6 +26,21 @@ class Landing extends Component {
   componentDidMount() {
     
     const { contract, accounts } = this.props;
+
+    contract.events.NewProposal({fromBlock: 'latest'})
+      .on('data', event => {
+        console.log(event.returnValues);
+        let proposalObj = {}
+        proposalObj.id = event.returnValues[0];
+        proposalObj.name = event.returnValues[1];
+        proposalObj.description = event.returnValues[2];
+        proposalObj.positiveVotes = event.returnValues[3];
+        proposalObj.negativeVotes = event.returnValues[4];
+        proposalObj.voters = event.returnValues[5];
+        proposalObj.owner = event.returnValues[6];
+        this.setState({ proposals: [proposalObj, ...this.state.proposals] });
+      });
+
     this.loadProposals(contract, accounts);
   };
 
@@ -77,9 +92,9 @@ class Landing extends Component {
     contract.methods.newProposal(this.state.proposalTitle, this.state.proposalDesc)
       .send({ from: accounts[0] })
       .then(receipt => {
-        console.log('your proposal has been sent to the network');
+        this.setState({ proposalTitle: '', proposalDesc: '' });
         this.handleClose();
-      })
+      });
   }
 
   render() {
@@ -92,7 +107,7 @@ class Landing extends Component {
             {
               this.state.proposals.length > 0 ?
                 this.state.proposals.map((proposal, index) => 
-                  <Card key={index} proposal={proposal} contract={this.props.contract}/>
+                  <Card key={index} proposal={proposal} contract={this.props.contract} accounts={this.props.accounts}/>
                 ) : <p className="text-center"> No proposals yet </p>
             }
           </div>
@@ -101,10 +116,7 @@ class Landing extends Component {
         <div className="newProposal" onClick={this.handleShow}>
           <i className="fas fa-plus my-float"></i>
         </div>
-
-        {
-          // Modal for adding new proposal
-        }
+       
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title> Make your proposal </Modal.Title>
