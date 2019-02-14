@@ -13,7 +13,7 @@ contract('Voting', accounts => {
   let proposalDesc = "Some people think they should start at 1";
   let proposalId = 0;
 
-  before('setup contract for each test', async () => {
+  before('setup contract for the test', async () => {
     voting = await Voting.new(owner);
   });
 
@@ -32,7 +32,12 @@ contract('Voting', accounts => {
       .then(receipt => {
         assert.equal(receipt.logs.length, 1, 'triggers one event');
         assert.equal(receipt.logs[0].event, 'NewProposal', 'should be the NewProposal event');
-        assert.equal(receipt.logs[0].args.name, proposalName, 'logs the proposal name');
+        assert.equal(receipt.logs[0].args.proposalId, proposalId, 'logs the proposal id');
+        assert.equal(receipt.logs[0].args.proposalName, proposalName, 'logs the proposal name');
+        assert.equal(receipt.logs[0].args.proposalDesc, proposalDesc, 'logs the proposal description');
+        assert.equal(receipt.logs[0].args.positiveVotes, 0, 'positive votes should be zero');
+        assert.equal(receipt.logs[0].args.negativeVotes, 0, 'negative votes should be zero');
+        assert.equal(receipt.logs[0].args.voters.length, 0, 'voters should be empty');
         assert.equal(receipt.logs[0].args.proposer, proposer, 'logs the proposer of the proposal');
       });
   });
@@ -52,10 +57,9 @@ contract('Voting', accounts => {
       .then(receipt => {
         assert.equal(receipt.logs.length, 1, 'triggers one event');
         assert.equal(receipt.logs[0].event, 'Voted', 'should be the Voted event');
-        assert.equal(receipt.logs[0].args.proposalName, proposalName, 'should have the same name');
-        assert.equal(receipt.logs[0].args.voter, voter1, 'should return the voter address');
-        assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have 1 positive vote');
-        assert.equal(receipt.logs[0].args.negativeVotes, 0, 'should have 0 negative votes');
+        assert.equal(receipt.logs[0].args.proposalId, proposalId, 'should have the same id');
+        assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have one positive vote');
+        assert.equal(receipt.logs[0].args.negativeVotes, 0, 'should have zero negative votes');
       });
   });
 
@@ -64,10 +68,9 @@ contract('Voting', accounts => {
       .then(receipt => {
         assert.equal(receipt.logs.length, 1, 'triggers one event');
         assert.equal(receipt.logs[0].event, 'Voted', 'should be the Voted event');
-        assert.equal(receipt.logs[0].args.proposalName, proposalName, 'should have the same name');
-        assert.equal(receipt.logs[0].args.voter, voter2, 'should return the voter address');
-        assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have 1 positive vote');
-        assert.equal(receipt.logs[0].args.negativeVotes, 1, 'should have 1 negative votes');
+        assert.equal(receipt.logs[0].args.proposalId, proposalId, 'should have the same id');
+        assert.equal(receipt.logs[0].args.positiveVotes, 1, 'should have one positive vote');
+        assert.equal(receipt.logs[0].args.negativeVotes, 1, 'should have zero negative votes');
       });
   });
 
@@ -110,5 +113,7 @@ contract('Voting', accounts => {
         assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
       });
   });
+
+  
 
 });
