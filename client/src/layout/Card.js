@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+
 import '../css/card.css';
 
 class Card extends Component {
@@ -9,9 +12,6 @@ class Card extends Component {
 
         this.state = {
             bookmark: false,
-            bookmarks: [],
-            votepositive: false,
-            votenagative: false
         };
 
         this.bookmarkProposal = this.bookmarkProposal.bind(this);
@@ -22,40 +22,42 @@ class Card extends Component {
     componentDidMount() {
         this.props.contract.events.Voted({fromBlock: 'latest'})
             .on('data', event => {
-				$(`#positive${event.returnValues[0]}`).html(event.returnValues[2]);
+                $(`#positive${event.returnValues[0]}`).html(event.returnValues[2]);
                 $(`#negative${event.returnValues[0]}`).html(event.returnValues[3]);
             });
     }
 
     bookmarkProposal(id) {
 
-        this.setState({
-            bookmark: !this.state.bookmark, 
-            bookmarks: [...this.state.bookmarks, id]
-        });
-
-        console.log(this.state.bookmarks);
-        localStorage.setItem('bookmarks', JSON.stringify(this.state.bookmarks));
+        this.setState({ bookmark: !this.state.bookmark });
     };
 
-    votePositive() {
-        if (!this.state.votenagative && !this.state.votepositive) {
-            this.setState({votepositive: !this.state.votepositive});
-        }
+    votePositive(id) {
+        
+        const { contract, accounts } = this.props;
+        contract.methods.votePositive(id)
+            .send({ from: accounts[0] })
+            .then(receipt => 
+                console.log(receipt.transactionHash))
+            .catch(err => 
+                console.log(err.message))
     };
 
-    voteNegative() {
-        if (!this.state.votepositive && !this.state.votenagative) {
-            this.setState({votenagative: !this.state.votenagative});
-        }
+    voteNegative(id) {
+        
+        const { contract, accounts } = this.props;
+        contract.methods.voteNegative(id)
+            .send({ from: accounts[0] })
+            .then(receipt =>
+                console.log(receipt.transactionHash))
+            .catch(err => 
+                console.log(err.message));
     };
 
     render() {
 
         const { proposal } = this.props;
         let bookmarkclass = this.state.bookmark ? 'bookmarked' : 'unmarked';
-        let votepositiveclass = this.state.votepositive ? 'positiveVotes' : 'not-voted';
-        let votenegativeclass = this.state.votenagative ? 'negativeVotes' : 'not-voted';
 
         return (
             <div className="card text-white bg-dark mb-3">
@@ -84,18 +86,42 @@ class Card extends Component {
 
                 <div className="card-footer">
                     <div className="row">
-                        <div className="col-md-4 col-sm-4 col-4 text-left">
-                            <span id={`positive${proposal.id}`} className="badge badge-success"> {proposal.positiveVotes} </span> &nbsp;
-                            <i className={`fas fa-thumbs-up ${votepositiveclass}`} onClick={this.votePositive}> </i>
+                        <div className="col-md-4 col-sm-4 col-4 text-right">
+                            <span id={`positive${proposal.id}`} className="badge badge-success">
+                                {proposal.positiveVotes} 
+                            </span> &nbsp;
+                            <OverlayTrigger
+                                placement={'top'}
+                                overlay={
+                                    <Tooltip id='tooltip-top'>
+                                        Vote Postive
+                                    </Tooltip>
+                                }
+                                >
+                                <i className='fas fa-thumbs-up positiveVotes' onClick={() => this.votePositive(proposal.id)}> </i>
+                            </OverlayTrigger>
+                            
                         </div>  
 
                         <div className="col-md-4 col-sm-4 col-4 text-center">
                             2 days ago
                         </div>
 
-                        <div className="col-md-4 col-sm-4 col-4 text-right">
-                            <span id={`negative${proposal.id}`} className="badge badge-danger"> {proposal.negativeVotes} </span> &nbsp;
-                            <i className={`fas fa-thumbs-down ${votenegativeclass}`} onClick={this.voteNegative}> </i>
+                        <div className="col-md-4 col-sm-4 col-4 text-left">
+                            <OverlayTrigger
+                                placement={'top'}
+                                overlay={
+                                    <Tooltip id='tooltip-top'>
+                                        Vote Negative
+                                    </Tooltip>
+                                }
+                                >
+                                <i className='fas fa-thumbs-down negativeVotes' onClick={() => this.voteNegative(proposal.id)}> </i>
+                            </OverlayTrigger> &nbsp;
+                           
+                            <span id={`negative${proposal.id}`} className="badge badge-danger"> 
+                                {proposal.negativeVotes} 
+                            </span>
                         </div>
                     </div>
                     
