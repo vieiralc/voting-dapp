@@ -143,7 +143,7 @@ contract Voting {
         (alreadySaved, index) = checkAlreadySaved(_proposalId); 
         
         if (alreadySaved) {
-            delete array[index];   
+            delete array[index];
             removeGap(index, array);
             emit removeFromSaved(_proposalId);
         } else {
