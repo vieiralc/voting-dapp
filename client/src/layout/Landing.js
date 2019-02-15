@@ -29,7 +29,6 @@ class Landing extends Component {
 
     contract.events.NewProposal({fromBlock: 'latest'})
       .on('data', event => {
-        console.log(event.returnValues);
         let proposalObj = {}
         proposalObj.id = event.returnValues[0];
         proposalObj.name = event.returnValues[1];
