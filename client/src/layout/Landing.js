@@ -102,7 +102,7 @@ class Landing extends Component {
       <div className="container-fluid land-container">
           
         <div className="row justify-content-center">
-          <div className="col-md-5">
+          <div className="col-md-6">
             {
               this.state.proposals.length > 0 ?
                 this.state.proposals.map((proposal, index) => 
