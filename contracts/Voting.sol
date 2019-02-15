@@ -13,10 +13,11 @@ contract Voting {
         address proposer
     );
     event newProposalSaved(uint proposalId);
+    event removeFromSaved(uint proposalId);
     
     mapping (uint => Proposal) proposalObj;
     mapping (address => User) userObj;
-    uint public proposalId = 0;
+    uint public proposalId = 1;
     uint[] proposals;
 
     struct User {
@@ -122,9 +123,42 @@ contract Voting {
         return false;
     }
 
+    function checkAlreadySaved(uint _proposalId) internal view returns(bool alreadySaved, uint index) {
+        uint[] memory proposalsIds = userObj[msg.sender].saved;
+        uint i = 0;
+        
+        for (i = 0; i < proposalsIds.length; i++) {
+            if (proposalsIds[i] == _proposalId)
+                return (true, i);
+        }
+
+        return (false, i);
+    }
+
     function saveProposal(uint _proposalId) public {
-        userObj[msg.sender].saved.push(_proposalId);
-        emit newProposalSaved(_proposalId);
+        
+        bool alreadySaved;
+        uint index;
+        uint[] memory array = userObj[msg.sender].saved;
+        (alreadySaved, index) = checkAlreadySaved(_proposalId); 
+        
+        if (alreadySaved) {
+            delete array[index];   
+            removeGap(index, array);
+            emit removeFromSaved(_proposalId);
+        } else {
+            userObj[msg.sender].saved.push(_proposalId);
+            emit newProposalSaved(_proposalId);
+        }
+    }
+
+    function removeGap(uint index, uint[] memory array) internal pure {
+        if (index > array.length) return;
+
+        for (uint i = index; i < array.length - 1; i++)
+            array[i] = array[i+1];
+        
+        delete array[array.length-1];
     }
 
     function getSaved() public view returns (uint[] memory) {
