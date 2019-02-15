@@ -28,8 +28,15 @@ class Card extends Component {
     }
 
     bookmarkProposal(id) {
-
-        this.setState({ bookmark: !this.state.bookmark });
+        this.props.contract.methods.saveProposal(id)
+            .send({ from: this.props.accounts[0]})
+            .then(receipt => {
+                console.log(receipt.transactionHash);
+                if (!this.state.bookmark)
+                    this.setState({ bookmark: !this.state.bookmark });
+            })
+            .catch(err => 
+                console.log(err.message));
     };
 
     votePositive(id) {
@@ -71,7 +78,9 @@ class Card extends Component {
                         </div>
                         <div className="col-md-3 col-sm-3 col-3">
                             <div className="text-right">
-                                <i className={`fas fa-bookmark ${bookmarkclass}`} onClick={() => this.bookmarkProposal(proposal.id)}></i>
+                                <button type="button" className="btn btn-primary btn-sm" onClick={() => this.bookmarkProposal(proposal.id)}>
+                                    <i className={`fas fa-bookmark ${bookmarkclass}`}></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -98,7 +107,9 @@ class Card extends Component {
                                     </Tooltip>
                                 }
                                 >
-                                <i className='fas fa-thumbs-up positiveVotes' onClick={() => this.votePositive(proposal.id)}> </i>
+                                <button type="button" className="btn btn-warning btn-sm" onClick={() => this.votePositive(proposal.id)}>
+                                    <i className='fas fa-thumbs-up positiveVotes'> </i>
+                                </button>   
                             </OverlayTrigger>
                             
                         </div>  
@@ -116,7 +127,9 @@ class Card extends Component {
                                     </Tooltip>
                                 }
                                 >
-                                <i className='fas fa-thumbs-down negativeVotes' onClick={() => this.voteNegative(proposal.id)}> </i>
+                                <button type="button" className="btn btn-warning btn-sm" onClick={() => this.voteNegative(proposal.id)}>
+                                    <i className='fas fa-thumbs-down negativeVotes'> </i>
+                                </button>
                             </OverlayTrigger> &nbsp;
                            
                             <span id={`negative${proposal.id}`} className="badge badge-danger"> 
