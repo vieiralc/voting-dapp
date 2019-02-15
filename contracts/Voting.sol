@@ -3,7 +3,16 @@ pragma solidity ^0.5.0;
 contract Voting {
     
     event Voted(uint proposalId, address voter, uint positiveVotes, uint negativeVotes);
-    event NewProposal(uint, string, string, uint, uint, address[], address);
+    event NewProposal(
+        uint proposalId, 
+        string proposalName, 
+        string proposalDesc, 
+        uint positiveVotes, 
+        uint negativeVotes, 
+        address[] voters, 
+        address proposer
+    );
+    event newProposalSaved(uint proposalId);
     
     mapping (uint => Proposal) proposalObj;
     mapping (address => User) userObj;
@@ -115,6 +124,7 @@ contract Voting {
 
     function saveProposal(uint _proposalId) public {
         userObj[msg.sender].saved.push(_proposalId);
+        emit newProposalSaved(_proposalId);
     }
 
     function getSaved() public view returns (uint[] memory) {
