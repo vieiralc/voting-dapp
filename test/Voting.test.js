@@ -112,8 +112,38 @@ contract('Voting', accounts => {
       .catch(error => {
         assert(error.message.indexOf('revert') >= 0, 'error message must contain revert')
       });
-  });
+    });
 
-  
+    it('saves a proposal', async() => {
+      await voting.saveProposal(proposalId, {from: owner})
+        .then(receipt => {
+          assert.equal(receipt.logs.length, 1, 'triggers one event');
+          assert.equal(receipt.logs[0].event, 'newProposalSaved', 'should be the newProposalSaved event');
+          assert.equal(receipt.logs[0].args.proposalId, proposalId, 'should have the same id');
+        });
+    });
+
+    it('gets a saved proposal', async() => {
+      let proposal = await voting.getSaved({ from: owner });
+      assert.equal(proposal[0], proposalId, 'should return the id of the saved proposal');
+    });
+
+    it('gets owners proposals', async() => {
+      let proposals = await voting.getMyProposals({ from: owner });
+      assert.equal(proposals.length, 0, 'owner should not have any proposals');
+    })
+
+    it('gets proposer proposals', async() => {
+      let proposals = await voting.getMyProposals({ from: proposer });
+      assert.equal(proposals.length, 1, 'proposer should have 1 proposal');
+      let proposal = await voting.getProposal(proposals[0], { from: proposer })
+      
+      assert.equal(proposal[0], proposalName, "should have the same name");
+      assert.equal(proposal[1], proposalDesc, "should have the same desc");
+      assert.equal(proposal[2], 1, "should have 1 positive votes");
+      assert.equal(proposal[3], 1, "should have 1 negative votes");
+      assert.equal(proposal[4].length, 2, "should've received 2 votes");
+      assert.equal(proposal[5], proposer, "should return the proposer address");
+    })
 
 });
