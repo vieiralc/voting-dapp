@@ -114,20 +114,6 @@ contract('Voting', accounts => {
       });
     });
 
-    it('saves a proposal', async() => {
-      await voting.saveProposal(proposalId, {from: voter1})
-        .then(receipt => {
-          assert.equal(receipt.logs.length, 1, 'triggers one event');
-          assert.equal(receipt.logs[0].event, 'newProposalSaved', 'should be the newProposalSaved event');
-          assert.equal(receipt.logs[0].args.proposalId, proposalId, 'should have the same id');
-        });
-    });
-
-    it('gets a saved proposal', async() => {
-      let proposals = await voting.getSaved({ from: voter1 });
-      assert.equal(proposals[0], proposalId, 'should return the id of the saved proposal');
-    });
-
     it('gets owners proposals', async() => {
       let proposals = await voting.getMyProposals({ from: proposer });
       assert.equal(proposals.length, 1, 'owner should have 1 proposal');

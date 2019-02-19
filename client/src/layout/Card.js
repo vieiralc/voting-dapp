@@ -28,15 +28,7 @@ class Card extends Component {
     }
 
     bookmarkProposal(id) {
-        this.props.contract.methods.saveProposal(id)
-            .send({ from: this.props.accounts[0]})
-            .then(receipt => {
-                console.log(receipt.transactionHash);
-                if (!this.state.bookmark)
-                    this.setState({ bookmark: !this.state.bookmark });
-            })
-            .catch(err => 
-                console.log(err.message));
+        this.setState({ bookmark: !this.state.bookmark });
     };
 
     votePositive(id) {
