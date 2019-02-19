@@ -11,7 +11,7 @@ class Card extends Component {
         super();
 
         this.state = {
-            bookmark: false,
+            bookmark: false
         };
 
         this.bookmarkProposal = this.bookmarkProposal.bind(this);
@@ -36,10 +36,13 @@ class Card extends Component {
         const { contract, accounts } = this.props;
         contract.methods.votePositive(id)
             .send({ from: accounts[0] })
-            .then(receipt => 
-                console.log(receipt.transactionHash))
-            .catch(err => 
-                console.log(err.message))
+            .then(receipt => {
+                console.log(receipt.status);
+                console.log(receipt.transactionHash)
+            })
+            .catch(err => {
+                console.log(err.message)
+            });
     };
 
     voteNegative(id) {
@@ -70,9 +73,18 @@ class Card extends Component {
                         </div>
                         <div className="col-md-3 col-sm-3 col-3">
                             <div className="text-right">
-                                <button type="button" className="btn btn-primary btn-sm" onClick={() => this.bookmarkProposal(proposal.id)}>
-                                    <i className={`fas fa-bookmark ${bookmarkclass}`}></i>
-                                </button>
+                                <OverlayTrigger
+                                    placement={'top'}
+                                    overlay={
+                                        <Tooltip id='tooltip-top'>
+                                            Not implemented yet
+                                        </Tooltip>
+                                    }
+                                    >
+                                    <button type="button" className="btn btn-primary btn-sm" onClick={() => this.bookmarkProposal(proposal.id)}>
+                                        <i className={`fas fa-bookmark ${bookmarkclass}`}></i>
+                                    </button>
+                                </OverlayTrigger>
                             </div>
                         </div>
                     </div>
