@@ -29,7 +29,7 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      if (networkId === 4447) {
+      if (networkId === 3) {
         // Set web3, accounts, and contract to the state, and then proceed with an
         // example of interacting with the contract's methods.
         this.setState({ web3, accounts, contract: instance });
